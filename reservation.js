@@ -9,21 +9,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const selectedDate = urlParams.get('date') || sessionStorage.getItem('selectedDate');
 
     if (selectedDate) {
-        // Explicitly parse the date to avoid timezone issues
-        const [year, month, day] = selectedDate.split('-').map(Number);
-        
-        // Create date using UTC to prevent timezone shifts
-        const parsedDate = new Date(Date.UTC(year, month - 1, day));
-        
-        // Convert to local date string
+        const parsedDate = new Date(selectedDate); // Parse the ISO date
         dateHeader.textContent = parsedDate.toLocaleDateString('en-US', options);
-        
-        // Persist the selected date in session storage
         sessionStorage.setItem('selectedDate', selectedDate);
     } else {
-        // Use current date if no date is selected
         dateHeader.textContent = currentDate.toLocaleDateString('en-US', options);
     }
+
 
     // Initialize cashier grid
     const cashierGrid = document.getElementById('cashierGrid');
@@ -65,32 +57,39 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initially hide the form
     formContainer.style.display = 'none';
 
-    // Function to clear all data
-    function clearAllData() {
-        // Clear localStorage for reservations and table states
-        localStorage.removeItem('currentReservations');
-        localStorage.removeItem('tableStates');
-        
-        // Clear the table body
-        if (tableBody) {
-            tableBody.innerHTML = '';
+    // Function to clear specific reservation
+    function clearSelectedReservation(selectedRow) {
+        if (selectedRow) {
+            // Remove the selected row from the table
+            selectedRow.remove();
+            
+            // Update localStorage
+            const currentReservations = JSON.parse(localStorage.getItem('currentReservations')) || [];
+            const updatedReservations = currentReservations.filter(reservation => 
+                !(reservation.name === selectedRow.cells[0].textContent && 
+                  reservation.time === selectedRow.cells[1].textContent)
+            );
+            
+            localStorage.setItem('currentReservations', JSON.stringify(updatedReservations));
+            
+            // Update table states only for the table associated with this reservation
+            const tableNumber = selectedRow.dataset.tableNumber;
+            const cell = document.querySelector(`.cashier-cell:nth-child(${tableNumber})`);
+            if (cell) {
+                cell.classList.remove('cashier-unavailable');
+                cell.classList.add('cashier-available');
+            }
+            
+            // Save updated table states
+            const tableStates = [];
+            document.querySelectorAll('.cashier-cell').forEach(cell => {
+                tableStates.push({
+                    number: cell.innerHTML,
+                    isAvailable: cell.classList.contains('cashier-available')
+                });
+            });
+            localStorage.setItem('tableStates', JSON.stringify(tableStates));
         }
-        
-        // Reset all table cells to available
-        document.querySelectorAll('.cashier-cell').forEach(cell => {
-            cell.classList.remove('cashier-unavailable');
-            cell.classList.add('cashier-available');
-        });
-
-        // Reset form if it's open
-        document.querySelectorAll('input').forEach(input => input.value = '');
-        formContainer.style.display = 'none';
-        
-        // Reset selected row
-        selectedRowForEdit = null;
-        
-        // Reset any selected rows
-        document.querySelectorAll('tr').forEach(r => r.classList.remove('selected'));
     }
 
     // Function to save reservations to localStorage
@@ -171,42 +170,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-function handleDateClick(date, event) {
-    // Prevent any default event behavior
-    if (event) event.preventDefault();
-
-    // Remove selected class from all calendar cells
-    const cells = document.querySelectorAll(".calendar-cell");
-    cells.forEach(cell => cell.classList.remove("selected"));
-
-    // Add selected class to the clicked cell
-    if (event && event.target) {
-        event.target.classList.add("selected");
-    }
-
-    // Parse the date
-    const [year, month, day] = date.split('-').map(Number);
-    
-    // Create a date object using UTC to prevent timezone issues
-    const selectedDate = new Date(Date.UTC(year, month - 1, day));
-    
-    const options = { month: 'long', day: '2-digit', year: 'numeric' };
-    const dateHeader = document.getElementById('current-date');
-    
-    // Use toLocaleDateString to format the date, passing the local options
-    if (dateHeader) {
-        dateHeader.textContent = selectedDate.toLocaleDateString('en-US', options);
-    }
-
-    // Store the exact date string in session storage
-    sessionStorage.setItem('selectedDate', date);
-
-    // Redirect to reservation details page with the selected date
-    window.location.href = `reservation-details.html?date=${date}`;
-}
-
-// Ensure this is available globally
-window.handleDateClick = handleDateClick;
     // ADD Reservation button click handler
     addReservationBtn.addEventListener('click', function() {
         formContainer.style.display = 'flex';
@@ -276,8 +239,8 @@ window.handleDateClick = handleDateClick;
             checkoutHistory.push(checkoutData);
             localStorage.setItem('checkoutHistory', JSON.stringify(checkoutHistory));
 
-            // Clear all current reservation data
-            clearAllData();
+            // Clear only the selected reservation
+            clearSelectedReservation(selectedRow);
         }
     });
 
@@ -298,6 +261,17 @@ window.handleDateClick = handleDateClick;
         const pax = document.querySelector('input[placeholder="Enter number of guests"]').value;
         const contact = document.querySelector('input[placeholder="Enter contact number"]').value;
         
+        // Check for duplicate time
+        const existingRows = document.querySelectorAll('#reservationTableBody tr');
+        const isDuplicateTime = Array.from(existingRows).some(row => {
+            return row.cells[1].textContent === time;
+        });
+
+        if (isDuplicateTime) {
+            alert('A reservation already exists for the selected time. Please choose a different time.');
+            return;
+        }
+
         // Validate inputs
         if (!name || !time || !pax || !contact) {
             alert('Please fill in all fields');
