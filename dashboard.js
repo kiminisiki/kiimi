@@ -174,15 +174,10 @@ function createCalendar(year, month) {
     const calendarContainer = document.getElementById("calendar");
     if (!calendarContainer) return;
 
+    // Clear existing calendar
     calendarContainer.innerHTML = "";
 
-    // Update the month display
-    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    const monthDisplay = document.getElementById("current-month");
-    if (monthDisplay) {
-        monthDisplay.textContent = `${monthNames[month]} ${year}`;
-    }
-
+    // Add weekday labels
     const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
     weekdays.forEach(day => {
         const weekdayCell = document.createElement("div");
@@ -194,7 +189,6 @@ function createCalendar(year, month) {
     const firstDay = new Date(year, month, 1).getDay();
     const adjustedFirstDay = (firstDay === 0) ? 6 : firstDay - 1;
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    
 
     for (let i = 0; i < adjustedFirstDay; i++) {
         const emptyCell = document.createElement("div");
@@ -207,66 +201,57 @@ function createCalendar(year, month) {
         dayCell.textContent = day;
         dayCell.classList.add("calendar-cell");
 
-        const currentDate = new Date(year, month, day).toISOString().slice(0, 10);
-        dayCell.addEventListener("click", () => handleDateClick(currentDate));
+        const selectedDateISO = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        dayCell.addEventListener("click", (event) => handleDateClick(selectedDateISO, event));
 
         calendarContainer.appendChild(dayCell);
     }
+
+    // Update month and year display
+    updateMonthDisplay();
+
+    // Save current month and year to session storage
+    sessionStorage.setItem('currentMonth', month);
+    sessionStorage.setItem('currentYear', year);
 }
 
+
 function handleDateClick(date, event) {
-    // Prevent any default event behavior
     if (event) event.preventDefault();
 
-    // Remove selected class from all calendar cells
     const cells = document.querySelectorAll(".calendar-cell");
     cells.forEach(cell => cell.classList.remove("selected"));
 
-    // Add selected class to the clicked cell
     if (event && event.target) {
         event.target.classList.add("selected");
     }
 
-    // Parse the date
-    const [year, month, day] = date.split('-').map(Number);
-    
-    // Create a date object using UTC to prevent timezone issues
-    const selectedDate = new Date(Date.UTC(year, month - 1, day));
-    
-    const options = { month: 'long', day: '2-digit', year: 'numeric' };
     const dateHeader = document.getElementById('current-date');
-    
-    // Use toLocaleDateString to format the date, passing the local options
+    const options = { month: 'long', day: '2-digit', year: 'numeric' };
     if (dateHeader) {
-        dateHeader.textContent = selectedDate.toLocaleDateString('en-US', options);
+        dateHeader.textContent = new Date(date).toLocaleDateString('en-US', options);
     }
 
-    // Store the exact date string in session storage
     sessionStorage.setItem('selectedDate', date);
-
-    // Redirect to reservation details page with the selected date
-    window.location.href = `reservation-details.html?date=${date}`;
 }
 
-
-// Ensure this is at the end of the file or in a global scope
 window.handleDateClick = handleDateClick;
 
 
 
 function changeMonth(direction) {
-    currentMonth += direction;
+        currentMonth += direction;
 
-    if (currentMonth < 0) {
-        currentMonth = 11;
-        currentYear -= 1;
-    } else if (currentMonth > 11) {
-        currentMonth = 0;
-        currentYear += 1;
+        if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear -= 1;
+        } else if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear += 1;
+        }
+
+        createCalendar(currentYear, currentMonth);
     }
-
-    createCalendar(currentYear, currentMonth);
-}
 
 function toggleMonthDropdown() {
     const monthDropdown = document.getElementById("month-dropdown");
@@ -654,4 +639,4 @@ document.addEventListener('DOMContentLoaded', loadContacts);
             if (e.key === 'Enter') {
                 addContact();
             }
-        });
+});
