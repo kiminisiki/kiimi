@@ -1,0 +1,264 @@
+/* Global styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Updated body styles to match reservation page */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-image: linear-gradient(#b8b1a6,#adadad,#e7e7e7,#c0bebe);
+    min-height: 100vh;
+}
+
+/* Updated Header styles */
+header {
+    background-color: #b8b1a6;
+    padding: 15px 20px;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}
+
+.nav-brand {
+    margin: 0;
+    font-size: 24px;
+    text-transform: uppercase;
+    color: white;
+}
+
+.back-btn {
+    background-color: #a69b8d;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.back-btn:hover {
+    background-color: #958779;
+}
+
+/* Main container styles */
+.checkout-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+/* History header styles */
+.history-header {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.history-header h2 {
+    color: white;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.search-section {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.search-input {
+    padding: 8px;
+    border: 1px solid #d1d1d1;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    min-width: 200px;
+    background-color: white;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+}
+
+.button-group button {
+    padding: 8px 20px;
+    border: 1px solid white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 0.95rem;
+}
+
+.button-group button:first-child {
+    background-color: #b8b1a6;
+    color: white;
+}
+
+.button-group button:first-child:hover {
+    background-color: #a69b8d;
+}
+
+.button-group button:last-child {
+    background-color: #a69b8d;
+    color: white;
+}
+
+.button-group button:last-child:hover {
+    background-color: #958779;
+}
+
+/* Table styles */
+.table-container {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    white-space: nowrap;
+}
+
+.history-table th {
+    background-color: #b8b1a6;
+    color: white;
+    font-weight: 600;
+    padding: 12px 20px;
+    text-align: left;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+.history-table td {
+    padding: 12px 20px;
+    border-bottom: 1px solid #eee;
+    color: #4a4a4a;
+}
+
+.history-table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+.history-table tr:last-child td {
+    border-bottom: none;
+}
+
+.empty-message {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+    font-style: italic;
+}
+
+/* Date header styles */
+.date-header {
+    background-color: #b8b1a6;
+    color: white;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    border-radius: 8px 8px 0 0;
+}
+
+/* Add styles for selected rows */
+tr.selected {
+    background-color: #e0e0e0 !important;
+    cursor: pointer;
+}
+
+tr {
+    cursor: pointer;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .search-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .button-group {
+        justify-content: stretch;
+    }
+
+    .button-group button {
+        flex: 1;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .history-table {
+        min-width: 800px;
+    }
+
+    .logo-brand {
+        justify-content: center;
+    }
+}
+
+/* Form section styles (if needed) */
+.form-section {
+    display: none;
+}
+
+/* Action buttons styles (matching reservation page) */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.action-btn {
+    padding: 8px 16px;
+    background-color: #b8b1a6;
+    color: white;
+    border: 1px solid white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.action-btn:hover {
+    background-color: #a69b8d;
+}
+
+.action-btn.checkout {
+    background-color: black;
+}
+
+.action-btn.checkout:hover {
+    background-color: #333;
+}

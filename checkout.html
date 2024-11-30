@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LE ENCHANTÉ CAFÉ - Checkout History</title>
+    <link rel="stylesheet" href="checkout.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo-brand">
+                <img src="Cafelogo.png" alt="Cafe Logo" class="logo">
+                <h1 class="nav-brand">LE ENCHANTÉ CAFÉ</h1>
+            </div>
+            <a href="reservation-details.html" class="back-btn">Back</a>
+        </div>
+    </header>
+
+    <main class="checkout-container">
+        <div class="history-header">
+            <h2>Check-Out History</h2>
+            <div class="search-section">
+                <input type="date" id="searchDate" class="search-input">
+                <div class="button-group">
+                    <button id="searchBtn">Search</button>
+                    <button id="resetBtn">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Time In</th>
+                        <th>Time Out</th>
+                        <th>Pax</th>
+                        <th>Contact No.</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                    <!-- Data will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="checkout.js"></script>
+</body>
+</html>
